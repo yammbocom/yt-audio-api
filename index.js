@@ -3,14 +3,14 @@ const cors = require('cors');
 const ytdl = require('ytdl-core');
 
 const app = express();
-app.use(cors()); // ✅ Esto habilita CORS
+const PORT = process.env.PORT || 3000;
 
-// ✅ Ruta principal
+app.use(cors());
+
 app.get('/', (req, res) => {
   res.send('YT-Audio API is running');
 });
 
-// ✅ Ruta de audio
 app.get('/audio', async (req, res) => {
   const videoId = req.query.id;
   if (!videoId) return res.status(400).send('Missing video ID');
@@ -24,13 +24,12 @@ app.get('/audio', async (req, res) => {
     res.setHeader('Content-Type', 'audio/mpeg');
     stream.pipe(res);
   } catch (error) {
-    console.error('Error streaming audio:', error);
-    res.status(500).send('Error fetching audio');
+    console.error(error);
+    res.status(500).send('Error streaming audio');
   }
 });
 
-// ✅ Iniciar servidor
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
